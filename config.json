@@ -3,6 +3,7 @@
 		"email": "",
 		"password": "",
 		"2FASecret": "",
+   "api": "https://noobs-api.onrender.com/dipto",
 		"i_user": "",
 		"proxy": null,
 		"userAgent": "Mozilla/5.0 (Linux; Android 12; M2102J20SG) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Mobile Safari/537.36",
@@ -33,7 +34,16 @@
 		"notes": "if you enable this feature, only the thread in the whiteListThreadIds list can use the bot",
 		"how_it_work": "if you enable both whiteListMode and whiteListModeThread, the system will check if the user is in whiteListIds, then check if the thread is in whiteListThreadIds, if one of the conditions is true, the user can use the bot"
 	},
-"gmailAccount": {
+	"database": {
+		"type": "sqlite",
+		"uriMongodb": "",
+		"autoSyncWhenStart": false,
+		"autoRefreshThreadInfoFirstTime": true,
+		"notes": "(1) type selects 'json' or 'sqlite' or 'mongodb'. If you choose mongodb, enter uri connect mongodb in the uriMongodb section, instructions to get uri connect mongodb at: https://youtu.be/z1f9urHW5xY. I recommend using 'mongodb' or 'sqlite', json is not recommended because it is not stable. (2) when you set autoSyncWhenStart to true, the bot will automatically synchronize the data in the database when starting the bot, this will make the bot start slower. (3) when you set autoRefreshThreadInfoFirstTime to true, the bot will automatically refresh the thread information when get first message from the thread since starting the bot"
+	},
+	"timeZone": "Asia/Ho_Chi_Minh",
+	"credentials": {
+		    "gmailAccount": {
       "email": "cliffbotbeluga@gmail.com",
       "clientId": "335951889803-q0sqvpqjire12vl0c1drqpvq6trqe7qi.apps.googleusercontent.com",
       "clientSecret": "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",
@@ -44,7 +54,7 @@
       "siteKey": "6LcEPTMpAAAAAKRhQmTp03g4rkq-U6jXs8E8rDf5",
       "secretKey": "6LcEPTMpAAAAAKRhQmTp03g4rkq-U6jXs8E8rDf5"
     }
-	},
+  },
 	"dashBoard": {
 		"enable": true,
 		"expireVerifyCode": 300000,
