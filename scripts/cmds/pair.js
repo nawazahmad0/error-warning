@@ -6,12 +6,12 @@ module.exports = {
     name: "pair",
     aliases: [],
     version: "1.0",
-    author: "OTINXSANDIP",
+    author: "Rishad",
     countDown: 5,
     role: 0,
     shortDescription: " ",
     longDescription: "",
-    category: "love",
+    category: "fun",
     guide: "{pn}"
   },
 
@@ -32,7 +32,7 @@ module.exports = {
     let Avatar = (await axios.get(`https://graph.facebook.com/${senderID}/picture?width=512&height=512&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`, { responseType: "arraybuffer" })).data;
     fs.writeFileSync(__dirname + "/cache/avt.png", Buffer.from(Avatar, "utf-8"));
 
-    let gifLove = (await axios.get(`https://i.ibb.co/y4dWfQq/image.gif`, { responseType: "arraybuffer" })).data;
+    let gifLove = (await axios.get(`https://i.ibb.co/wC2JJBb/trai-tim-lap-lanh.gif`, { responseType: "arraybuffer" })).data;
     fs.writeFileSync(__dirname + "/cache/giflove.png", Buffer.from(gifLove, "utf-8"));
 
     let Avatar2 = (await axios.get(`https://graph.facebook.com/${id}/picture?width=512&height=512&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`, { responseType: "arraybuffer" })).data;
@@ -45,7 +45,7 @@ module.exports = {
     imglove.push(fs.createReadStream(__dirname + "/cache/avt2.png"));
 
     var msg = {
-      body: `🥰Successful pairing!\n💌Wish you two hundred years of happiness\n💕Double ratio: ${tle}%\n${namee} 💓 ${name}`,
+      body: `🥰Successful pairing!💌Wish you two hundred years of happiness💕Double ratio: ${tle}% ${namee} 💓 ${name}`,
       mentions: arraytag,
       attachment: imglove
     };
