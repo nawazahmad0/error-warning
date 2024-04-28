@@ -1,48 +1,52 @@
 const axios = require('axios');
 const fs = require('fs-extra');
-module.exports={
-config:{
-  name: "meta",
-    aliases: ["img5"],
-    version: "6.9.0",
-    author: "dipto",
+const path = require('path');
+
+module.exports = {
+  config: {
+    name: "metaimg",
+    aliases: ["meta","metaai"],
+    version: "1.0",
+    author: "JARiF",
     countDown: 15,
     role: 0,
-    shortDescription: "photo genarate",
-    longDescription: "Photo genarate from meta ai",
-    category: "imagination",
+    shortDescription: "Generate images by Meta AI",
+    longDescription: "Generate images by Meta AI",
+    category: "download",
     guide: {
-      en: "{pn} [prompt]"
+      en: "{pn} prompt"
     }
-},
-onStart:async function ({ args, event, api }) {
-  try {
-    const prompt = args.join(" ");
-    const wait = await api.sendMessage("𝗪𝗮𝗶𝘁 𝗸𝗼𝗿𝗼 𝗕𝗮𝗯𝘆 <😘", event.threadID);
-    const response = await axios.get(`https://noobs-api.onrender.com/dipto/meta?prompt=${encodeURIComponent(prompt)}&key=dipto008`);
-    const data = response.data.imgUrls;
-    if (!data || data.length === 0) {
-      return api.sendMessage("Empty response or no images generated.",event.threadID,event.messageID);
+  },
+
+  onStart: async function ({ api, event, message, args }) {
+    try {
+      const p = args.join(" ");
+
+      const waitingMessage = await message.reply("Please wait...");
+
+
+      const url = `https://api.vyturex.com/meta?prompt=${p}`;
+
+      const response = await axios.get(url);
+      const data = response.data;
+      const imgData = [];
+
+        for (let i = 0; i < data.length; i++) {
+          const imgUrl = data[i];
+          const imgResponse = await axios.get(imgUrl, { responseType: 'arraybuffer' });
+          const imgPath = path.join(__dirname, 'cache', `${i + 1}.jpg`);
+          await fs.outputFile(imgPath, imgResponse.data);
+          imgData.push(fs.createReadStream(imgPath));
+        }
+
+      await message.reply({
+        body: `✅ | Generated`,
+        attachment: imgData
+      });
+
+    } catch (error) {
+      console.error(error);
+      return message.reply(`Redirect failed!\n.${error}`);
     }
-    const imgData = [];
-    for (let i = 0; i < data.length; i++) {
-      const imgUrl = data[i];
-      const imgResponse = await axios.get(imgUrl, { responseType: 'arraybuffer' });
-      const imgPath = (__dirname +`/cache/${i + 1}.jpg`);
-      await fs.outputFile(imgPath, imgResponse.data);
-      imgData.push(fs.createReadStream(imgPath));
-    }
-     await api.unsendMessage(wait.messageID);
-    await api.sendMessage({
-      body: `✅ | Generated your images`,
-      attachment: imgData
-    }, event.threadID ,event.messageID);
-for (const imgPath of imgData) {
-       fs.unlink(imgPath);
-}
-  } catch (e) {
-    console.error(e);
-    await api.sendMessage(`Failed to genarate photo!!!!\nerror: ${e.message}`, event.threadID);
   }
-}
 };
