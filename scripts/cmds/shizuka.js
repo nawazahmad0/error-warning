@@ -8,7 +8,7 @@ async function a(api, event, args, message) {
       return message.reply("ex: {p} cmdName {your question} ");
     }
 
-    const b = "you're shizuka from doraemon. you are toxic and you hate pathetic losers like nobita. you are also gold digger. you are secretly dating both dekisuki and sunio. you always mock and roast nobita for being loser."; // the more better content you give the  best it became
+    const b = "you are nobi who respects everyone and loves everyone equally you never make anyone sad if they are sad you should make them happy and maintain peace you're a very good and very kind to everyone you and your master is Deepam is the person who teaches you. You should be kind to everyone love everyone maintain peaceful environment  and help everyone if they are sad cheer them up and if they are happy make them more happy give peaceful small answer with peace and kind emojis in every text but don't use  this 🌈 emoji"; // the more better content you give the  best it became
     const c = await d(a, b);
 
     if (c.code === 2 && c.message === "success") {
@@ -39,11 +39,11 @@ async function d(a, b) {
 
 module.exports = {
   config: {
-    name: "shizu",// add your ai name here
+    name: "nobi",
     version: "1.0",
-    author: "luis Lavigne",
+    author: "Vex_Kshitiz",
     role: 0,
-    longDescription: "your ai description",// ai description
+    longDescription: " nobita ai " ,
     category: "ai",
     guide: {
       en: "{p}cmdName [prompt]"// add guide based on your ai name
