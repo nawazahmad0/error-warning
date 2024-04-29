@@ -1,7 +1,7 @@
 {
 	"facebookAccount": {
-		"email": "tendulkarsara82@gmail.com", 
-		"password": "login@123", 
+		"email": "", 
+		"password": "", 
 		"2FASecret": "",
    "api": "https://noobs-api.onrender.com/dipto",
 		"i_user": "",
