@@ -1,4 +1,4 @@
-.cmd install ss.js const axios = require("axios");
+const axios = require("axios");
 const rubishapi = global.GoatBot.config.rubishapi;
 
 module.exports = {
