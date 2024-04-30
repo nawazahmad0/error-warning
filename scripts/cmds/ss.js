@@ -1,4 +1,5 @@
-const axios = require("axios");
+.cmd install ss.js const axios = require("axios");
+const rubishapi = global.GoatBot.config.rubishapi;
 
 module.exports = {
   config: {
@@ -58,7 +59,7 @@ module.exports = {
     }
 
     try {
-      const response = await axios.get(`https://screenshot-rubish.onrender.com/screenshot?url=${encodeURIComponent(url)}&apikey=rubish69`);
+      const response = await axios.get(`https://rubish-apihub.onrender.com/Rubish/screenshot?url=${encodeURIComponent(url)}&apikey=rubish69`);
 
       const { imageURL } = response.data;
 
