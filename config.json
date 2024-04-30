@@ -2,9 +2,7 @@
 	"facebookAccount": {
 		"email": "100089332779568", 
 		"password": "LOGIN@123", 
-		"2FASecret": "",
-   "api":
- {
+		"2FASecret": "", {
   "dipto": "https://noobs-api.onrender.com/dipto"
 },
 		"i_user": "",
