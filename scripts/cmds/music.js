@@ -5,7 +5,7 @@ const yts = require("yt-search");
 const ytdl = require("@distube/ytdl-core");
 
 module.exports = {
-  sentMusic: { english: [], nepali: [], hindi: [], batman:[], legend: [], lovely:[], norzum:[], baig:[], talha:[], taylor:[], tribal:[], arjit:[], jubin:[], anuv:[], hchill:[], sky1:[]},
+  sentMusic: { english: [], nepali: [], hindi: [], batman:[], legend: [], lovely:[], norzum:[] },
 
   music: {
     english: ["PLMC9KNkIncKseYxDN2niH6glGRWKsLtde"],//yeutai song maa aru playlist id halna ["", "", ""],
@@ -16,15 +16,6 @@ module.exports = {
     legend: ["PL78ppHMLFyhSIfD8KvMRJdKDruU2h3UIa"],
     lovely: ["PLI_l1q-WZI9nIsMDTy3i1SEc-1JDywQY-"],
     norzum: ["PL1TrQgiilM_Y1oGwdcGdpnu_XIig_lURL"],
-    baig: ["PL-VHaeKT1xxMZAkHXPsGH1FGn7KjaO_MP"],
-    talha: ["PLRfp0rC-SGyKmLT6vFiqvj-XerWYoBujc"],
-    taylor: ["PLc8BjX57_to8WP2WO6HlzL9R-TTX21oBM"], 
-    tribal: ["PLaPLzpOlr3JQ3M5rmV6oKYDg_L1uGRNtm"],
-    arjit: ["PLizEqzsgQvPp8kTHGV9o6bjkz6t0TJtjm"],
-    jubin: ["PLu32IobdMrfJvuJikP22IEbz27kLrjq2h"],
-    anuv: ["PLLKP-hLXioCvo0uNvubn-faiHc6TdNZM8"],
-    hchill: ["PLyal44ee1xsrL6bCrDtofC9e5infNHIvr"],
-    sky1: ["PLNCQaR6UnxPL_F9gMiL1D6XHDHr6CRAL3"],
   },
 
   config: {
@@ -122,4 +113,30 @@ module.exports = {
       });
 
       stream.on('end', () => {
-        consol
+        console.info('[DOWNLOADER] Downloaded');
+
+        if (fs.statSync(filePath).size > 26214400) {
+          fs.unlinkSync(filePath);
+          api.unsendMessage(loadingMessage.messageID);
+          return api.sendMessage('❌ | The file could not be sent because it is larger than 25MB.', event.threadID, null, event.messageID);
+        }
+
+        const message = {
+          body: `🎵 | 𝗛𝗲𝗿𝗲'𝘀 𝘁𝗵𝗲 𝗿𝗮𝗻𝗱𝗼𝗺 𝗺𝘂𝘀𝗶𝗰:\n\n🔮 | 𝗧𝗶𝘁𝗹𝗲: ${randomMusicTitle}\n⏰ Duration: ${foundVideo.duration.timestamp}`,
+          attachment: fs.createReadStream(filePath)
+        };
+
+        api.sendMessage(message, event.threadID, null, event.messageID, () => {
+          fs.unlinkSync(filePath);
+        });
+
+        setTimeout(() => {
+          api.unsendMessage(loadingMessage.messageID);
+        }, 10000);
+      });
+    } catch (error) {
+      console.error('[ERROR]', error);
+      api.sendMessage('An error occurred while processing the command.', event.threadID, null, event.messageID);
+    }
+  },
+};
