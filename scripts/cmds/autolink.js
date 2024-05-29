@@ -2,7 +2,7 @@ const fs = require("fs-extra");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const qs = require("qs");
-const { getStreamFromURL, shortenURL, randomString } = global.utils;
+const { getStreamFromURL, randomString } = global.utils;
 
 function loadAutoLinkStates() {
   try {
@@ -13,21 +13,34 @@ function loadAutoLinkStates() {
   }
 }
 
+
 function saveAutoLinkStates(states) {
   fs.writeFileSync("autolink.json", JSON.stringify(states, null, 2));
 }
 
+
 let autoLinkStates = loadAutoLinkStates();
+
+
+async function shortenURL(url) {
+  try {
+    const response = await axios.get(`https://shortner-sepia.vercel.app/kshitiz?url=${encodeURIComponent(url)}`);
+    return response.data.shortened;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to shorten URL");
+  }
+}
 
 module.exports = {
   threadStates: {},
   config: {
     name: 'autolink',
-    version: '4.0',
+    version: '5.0',
     author: 'Vex_Kshitiz',
     countDown: 5,
     role: 0,
-    shortDescription: 'Auto video downloader for Instagram, Facebook, TikTok, Twitter, pinterest and youtube',
+    shortDescription: 'Auto video downloader for Instagram, Facebook, TikTok, Twitter, Pinterest, and YouTube',
     longDescription: '',
     category: 'media',
     guide: {
@@ -103,7 +116,6 @@ module.exports = {
 
       const shortUrl = await shortenURL(res);
       const messageBody = `✅ 🔗 Download Url: ${shortUrl}`;
-
       api.sendMessage({
         body: messageBody,
         attachment: fs.createReadStream(path)
