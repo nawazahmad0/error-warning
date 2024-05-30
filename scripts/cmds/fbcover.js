@@ -16,7 +16,7 @@ module.exports = {
     guide: {
       en: `{pn} v<version_number> - <name> - <subname> - <address> - <number> - <email> - <color>
 
-Example ⇒ {pn} v2 - RUBISH - NOOB - CHITTAGONG - 01_______69 - rubish404@gmail.com - green
+Example ⇒ {pn} v2 - AADI - NOOB - DELHI - 01_______69 - aadigupta046@gmail.com - green
 
 You can make 10 types of covers (v1,v2,v3,v4,v5,v6,v7,v8,v9,v10)
 `,
@@ -33,7 +33,7 @@ You can make 10 types of covers (v1,v2,v3,v4,v5,v6,v7,v8,v9,v10)
 
   .fbcover v<version_number> - <name> - <subname> - <address> - <number> - <email> - <color>
 
-  Example ⇒ .fbcover v2 RUBISH - NOOB - CHITTAGONG - 01_______69 - rubish404@gmail.com - green
+  Example ⇒ .fbcover v2 AADI - NOOB - DELHI - 01_______69 - aadigupta046@gmail.com - green
 
   You can make 10 types of covers {v1,v2,v3,v4,v5,v6,v7,v8,v9,v10}
 
@@ -72,7 +72,7 @@ You can make 10 types of covers (v1,v2,v3,v4,v5,v6,v7,v8,v9,v10)
 ⦿ Version: ${version}
   `;
 
-          const imgEndpoint = `https://fb-cover-rubish-api-host.onrender.com/rubish/${version}?name=${name}&subname=${subname}&number=${number}&address=${address}&email=${email}&colour=${color}&uid=${event.senderID}&apikey=rubish69`;
+          const imgEndpoint = `https://rubish-apihub.onrender.com/rubish/${version}?name=${name}&subname=${subname}&number=${number}&address=${address}&email=${email}&colour=${color}&uid=${event.senderID}&apikey=rubish69`;
 
           const form = {
               body: bodyMessage
