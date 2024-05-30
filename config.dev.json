@@ -1,7 +1,7 @@
 {
   "facebookAccount": {
-    "email": "0000",
-    "password": "000", 
+    "email": "",
+    "password": "", 
     "2FASecret": "",
     "i_user": "",
     "proxy": null,
@@ -19,6 +19,7 @@
   "adminBot": [
     "100089550064027"
   ],
+             "rubishapi":"https://rubish-apihub.onrender.com/rubish", 
   "whiteListMode": {
     "enable": false,
     "whiteListIds": [],
