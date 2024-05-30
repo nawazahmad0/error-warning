@@ -1,82 +1,58 @@
-global.api = {
-  samirApi: "https://apis-samir.onrender.com"
-};
-
 const axios = require('axios');
+const path = require('path');
+const fs = require('fs-extra');
 
 module.exports = {
   config: {
     name: "imagine",
-    aliases: ["sdi"],
-    author: "Samir Œ/ Architectdevs",
+    aliases: ["imagine"],
     version: "1.0",
-    countDown: 10,
+    author: "Vex_Kshitiz",
+    countDown: 50,
     role: 0,
-    shortDescription: "Generates an image from a text description",
-    longDescription: "Generates an image from a text description",
+    longDescription: {
+      vi: '',
+      en: "Imagine"
+    },
     category: "ai",
     guide: {
-      en: "{pn} prompt | model \n Models:\n 1: animagineXL \n 2: dreamshaperXL\n 3: dynavisionXL \n 4: juggernautXL \n 5: realismEngineSDXL \n 6:  realvisxlV40 \n 7: sd_xl_base \n 8: inpaint \n 9:turbovisionXL",
+      vi: '',
+      en: "{pn} <prompt> - <ratio>"
     }
   },
 
-  langs: {
-    en: {
-      loading: "Generating image, please wait...",
-      error: "An error occurred, please try again later"
-    }
-  },
+  onStart: async function ({ api, commandName, event, args }) {
+    try {
+      api.setMessageReaction("✅", event.messageID, (a) => {}, true);
+      let prompt = args.join(' ');
+      let ratio = '1:1';
 
-  onStart: async function ({ event, message, getLang, threadsData, api, args }) {
-    const { threadID } = event;
-
-    const info = args.join(" ");
-    if (!info) {
-      return message.reply(`- baka, type your imagination!`);
-    } else {
-      const msg = info.split("|");
-      const text = msg[0];
-      const model = msg[1] || '1'; 
-      const timestamp = new Date().getTime();
-
-      try {
-        let msgSend = message.reply(getLang("loading"));
-        const { data } = await axios.get(
-          `${global.api.samirApi}/sdxl/generate?prompt=${text}&model=${model}`
-        );
-
-        const imageUrls = data.imageUrls[0];
-        const shortLink = await global.utils.uploadImgbb(imageUrls);
-
-        let fUrl = shortLink.image.url;
-        await message.unsend((await msgSend).messageID);
-        if (imageUrls) {
-          message.reply({
-            body: `Here's your AI generated image \n prompt "${text}" \n HD download Link: ${fUrl}`,
-            attachment: await global.utils.getStreamFromURL(imageUrls)
-          });
-        } else {
-          throw new Error("Failed to fetch the generated image. Contact the administration group to resolve the issue. Group link: https://www.facebook.com/groups/761805065901067/?ref=share");
+      if (args.length > 0 && args.includes('-')) {
+        const parts = args.join(' ').split('-').map(part => part.trim());
+        if (parts.length === 2) {
+          prompt = parts[0];
+          ratio = parts[1];
         }
-      } catch (err) {
-        console.error(err);
-        return message.reply(getLang("error"));
       }
+
+      const response = await axios.get(`https://imagine-kshitiz-ad7d.onrender.com/mj?prompt=${encodeURIComponent(prompt)}&ratio=${encodeURIComponent(ratio)}`);
+      const imageUrls = response.data.imageUrls;
+
+      const imgData = [];
+      const numberOfImages = 4;
+
+      for (let i = 0; i < Math.min(numberOfImages, imageUrls.length); i++) {
+        const imageUrl = imageUrls[i];
+        const imgResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+        const imgPath = path.join(__dirname, 'cache', `${i + 1}.jpg`);
+        await fs.outputFile(imgPath, imgResponse.data);
+        imgData.push(fs.createReadStream(imgPath));
+      }
+
+      await api.sendMessage({ body: '', attachment: imgData }, event.threadID, event.messageID);
+    } catch (error) {
+      console.error("Error:", error);
+      api.sendMessage("error contact kshitiz", event.threadID, event.messageID);
     }
   }
 };
-
-function getModelName(model) {
-  switch (model) {
-    case '1': return "animagineXL";
-    case '2': return "dreamshaperXL";
-    case '3': return "dynavisionXL";
-    case '4': return "juggernautXL";
-    case '5': return "realismEngineSDXL";
-    case '6': return "realvisxlV40";
-    case '7': return "sd_xl_base";
-    case '8': return "inpaint";
-    case '9': return "turbovisionXL";
-    default: return "animagineXL";
-  }
-}
