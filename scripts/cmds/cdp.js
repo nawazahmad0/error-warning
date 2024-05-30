@@ -23,7 +23,7 @@ module.exports = {
 
     onStart: async function ({ api, event, args }) {
         try {
-            const response = await axios.get("https://cdp-rubish-api.onrender.com/api-cdp");
+            const response = await axios.get("https://rubish-apihub.onrender.com/api-cdp");
             const data = response.data;
 
             const maleImgResponse = await axios.get(data.images[0], { responseType: "arraybuffer" });
