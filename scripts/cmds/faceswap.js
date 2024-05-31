@@ -1,18 +1,44 @@
+const rubishapi = global.GoatBot.config.rubishapi;
+
 module.exports = {
-  config: {
-    name: "faceswap",
-    aliases: ["swap", "exchange"],
-    version: "1.0",
-    author: 'Samir Œ',
-    shortDescription: "Swap faces in two images",
-    longDescription: "Swap faces in two images provided as attachments.",
-    category: "𝗙𝗨𝗡"
-  },
+    config: {
+      name: "faceswap",
+      aliases: ["swap"],
+      author: "RUBISH",
+      version: "2.0",
+      cooldowns: 5,
+      role: 0,
+      shortDescription: {
+        en: "Swap faces in images"
+      },
+      longDescription: {
+        en: "This command enables you to swap faces in images, creating amusing combinations."
+      },
+      category: "Image",
+      guide: {
+        en: "{pn} <reply with 2 images>"
+      }
+    },
+
 
   onStart: async function({ message, event, api }) {
     try {
+
+      const setReactionInProgress = () => {
+        api.setMessageReaction("⏳", event.messageID, (err) => {
+          if (err) console.error(err);
+        }, true);
+      };
+
+
+      const setReactionSuccess = () => {
+        api.setMessageReaction("✅", event.messageID, (err) => {
+          if (err) console.error(err);
+        }, true);
+      };
+
       if (event.type != "message_reply") {
-        return message.reply("Please reply to a message with two images attached.");
+        return message.reply("⚠️ | Please reply to a message with two images attached.");
       }
 
       let links = [];
@@ -21,18 +47,30 @@ module.exports = {
       }
 
       if (links.length < 2) {
-        return message.reply("Please ensure there are exactly two images attached.");
+
+        setReactionSuccess(); 
+        return message.reply("⚠️ | Please ensure there are exactly two images attached.");
       }
 
-      const shortLink1 = await global.utils.uploadImgbb(links[0]);
-      const Url1 = shortLink1.image.url;
+      setReactionInProgress();
 
-      const shortLink2 = await global.utils.uploadImgbb(links[1]);
-      const Url2 = shortLink2.image.url;
+      const maskimg = await global.utils.uploadImgbb(links[0]);
+      const maskimgurl = maskimg.image.url;
 
-      let swapface = `https://rubish-apihub.onrender.com/rubish/faceswap?target=https://i.ibb.co/1dFvfMT/image.jpg&mask=https://i.ibb.co/SX5tJQc/image.jpg&apikey=rubish69`;
-      const stream = await global.utils.getStreamFromURL(swapface);
-      message.reply({ body: "", attachment: stream });
+      const targetimg = await global.utils.uploadImgbb(links[1]);
+      const targetimgurl = targetimg.image.url;
+
+      let swapface = `${rubishapi}/faceswap?target=${targetimgurl}&mask=${maskimgurl}&apikey=rubish69`;
+      const transformingMessage = await message.reply({ body: "⏳ | Face swapping, Please wait" });
+
+      const transformedImageStream = await global.utils.getStreamFromURL(swapface);
+
+      await api.unsendMessage(transformingMessage.messageID);
+
+      await message.reply({ body: "✅ | Successfully swapped face", attachment: transformedImageStream });
+
+      setReactionSuccess(); 
+
     } catch (error) {
       console.error(error);
       message.reply("An error occurred while processing the face swap.");
