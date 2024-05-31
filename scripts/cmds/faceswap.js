@@ -30,7 +30,7 @@ module.exports = {
       const shortLink2 = await global.utils.uploadImgbb(links[1]);
       const Url2 = shortLink2.image.url;
 
-      let swapface = `https://apis-samir.onrender.com/faceswap?sourceUrl=${Url1}&targetUrl=${Url2}`;
+      let swapface = `https://rubish-apihub.onrender.com/rubish/faceswap?target=https://i.ibb.co/1dFvfMT/image.jpg&mask=https://i.ibb.co/SX5tJQc/image.jpg&apikey=rubish69`;
       const stream = await global.utils.getStreamFromURL(swapface);
       message.reply({ body: "", attachment: stream });
     } catch (error) {
