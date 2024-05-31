@@ -10,7 +10,7 @@ async function sing(api, event, args, message) {
   try {
     let title = '';
 
-
+  
     const extractShortUrl = async () => {
       const attachment = event.messageReply.attachments[0];
       if (attachment.type === "video" || attachment.type === "audio") {
@@ -20,10 +20,10 @@ async function sing(api, event, args, message) {
       }
     };
 
-
-    if (event.messageReply && event.messageReply.attachments && event.messageReply.attachments.length > 0) {
+   
+    if (event.messageReply && event.messageReply.attachments && event.messageReply.attachments.length > 0) {        
       const shortUrl = await extractShortUrl();
-      const musicRecognitionResponse = await axios.get(`https://audio-reco.onrender.com/kshitiz?url=${encodeURIComponent(shortUrl)}`);
+      const musicRecognitionResponse = await axios.get(`https://audio-recom.onrender.com/kshitiz?url=${encodeURIComponent(shortUrl)}`);
       title = musicRecognitionResponse.data.title;
     } else if (args.length === 0) {
       message.reply("Please provide a song name.");
@@ -32,7 +32,7 @@ async function sing(api, event, args, message) {
       title = args.join(" ");
     }
 
-
+ 
     const searchResults = await yts(title);
     if (!searchResults.videos.length) {
       message.reply("No song found for the given query.");
