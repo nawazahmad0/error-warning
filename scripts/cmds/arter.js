@@ -116,7 +116,7 @@ case prompt.toLowerCase().startsWith('send video'): {
     });
   } catch (error) {
     console.error(error);
-    return api.sendMessage("❌ An error occurred while processing your request.", event.threadID, event.messageID);
+    return api.sendMessage("🙏.", event.threadID, event.messageID);
   }
   
   api.setMessageReaction("✅", event.messageID, () => {}, true);
@@ -235,7 +235,7 @@ try {
             await fs.remove(path.join(__dirname, "cache"));
         } catch (error) {
             console.error(error);
-            return api.sendMessage(`An error occurred.`, event.threadID, event.messageID);
+            return api.sendMessage(`😜.`, event.threadID, event.messageID);
  api.setMessageReaction("✅", event.messageID, () => {}, true);
          
 }
@@ -262,7 +262,7 @@ default: {
       }
     } catch (error) {
       console.error(error);
-      message.reply("Sorry, an error occurred while processing your request.");
+      message.reply("🙏.");
       api.setMessageReaction("❌", event.messageID, () => {}, true);
     }
   }
