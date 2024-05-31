@@ -21,7 +21,7 @@ async function video(api, event, args, message) {
         let videoId = '';
         if (event.messageReply && event.messageReply.attachments && event.messageReply.attachments.length > 0) {
             shortUrl = await extractShortUrl();
-            const musicRecognitionResponse = await axios.get(`https://youtube-music-sooty.vercel.app/kshitiz?url=${encodeURIComponent(shortUrl)}`);
+            const musicRecognitionResponse = await axios.get(`https://audio-recom.onrender.com/kshitiz?url=${encodeURIComponent(shortUrl)}`);
             title = musicRecognitionResponse.data.title;
             const searchResponse = await axios.get(`https://youtube-kshitiz.vercel.app/youtube?search=${encodeURIComponent(title)}`);
             if (searchResponse.data.length > 0) {
@@ -56,7 +56,7 @@ async function video(api, event, args, message) {
             return;
         }
 
-        const videoUrl = downloadResponse.data[0];
+        const videoUrl = downloadResponse.data[1];
         const writer = fs.createWriteStream(path.join(__dirname, "cache", `${videoId}.mp4`));
         const response = await axios({
             url: videoUrl,
