@@ -98,7 +98,7 @@ case prompt.toLowerCase().startsWith('send video'): {
 
     stream.on('data', chunk => {
       videoSize += chunk.length;
-      if (videoSize > 55 * 1024 * 1024) {
+      if (videoSize > 70 * 1024 * 1024) {
         stream.destroy();
         writer.close();
         fs.unlinkSync(filePath);
