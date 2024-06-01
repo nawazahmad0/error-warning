@@ -1,61 +1,112 @@
-const axios = require("axios");
-const { getStreamFromURL } = global.utils;
+const fs = require('fs');
+const path = require('path');
+const axios = require('axios');
+const { exec } = require('child_process');
+const ffmpeg = require('ffmpeg-static');
+
+const cacheFolder = path.join(__dirname, 'cache');
+
+if (!fs.existsSync(cacheFolder)) {
+  fs.mkdirSync(cacheFolder);
+}
 
 module.exports = {
-    config: {
-        name: "niji2",
-        aliases: ["nijijourney2", "artist"],
-        version: "1.0",
-        author: "rehat--",
-        countDown: 0,
-        role: 0,
-        longDescription: "Text to Image",
-        category: "ai",
-        guide: {
-            en: "{pn} prompt --ar [ratio] or reply an image\n\n Example: {pn} 1girl, cute face, masterpiece, best quality --ar 16:9\n[ default 1:1 ]"
-        }
-    },
-
-    onStart: async function({ api, args, message, event }) {
-        try {
-            let prompt = "";
-            let imageUrl = "";
-            let aspectRatio = ""; 
-
-            const aspectIndex = args.indexOf("--ar");
-            if (aspectIndex !== -1 && args.length > aspectIndex + 1) {
-                aspectRatio = args[aspectIndex + 1];
-                args.splice(aspectIndex, 2); 
-            }
-
-            if (event.type === "message_reply" && event.messageReply.attachments && event.messageReply.attachments.length > 0 && ["photo", "sticker"].includes(event.messageReply.attachments[0].type)) {
-                imageUrl = encodeURIComponent(event.messageReply.attachments[0].url);
-            } else if (args.length === 0) {
-                message.reply("Please provide a prompt or reply to an image.");
-                return;
-            }
-
-            if (args.length > 0) {
-                prompt = args.join(" ");
-            }
-
-
-            let apiUrl = `https://project-niji.onrender.com/api/v1/generate?prompt=${encodeURIComponent(prompt)}.&aspectRatio=${aspectRatio}&apikey=rehat`;
-            if (imageUrl) {
-                apiUrl += `&imageUrl=${imageUrl}`;
-            }
-
-            const processingMessage = await message.reply("Please wait...⏳");
-            const response = await axios.post(apiUrl);
-            const img = response.data.url;
-
-            await message.reply({
-                attachment: await getStreamFromURL(img)
-            });
-
-        } catch (error) {
-            console.error(error);
-            message.reply("An error occurred.");
-        }
+  config: {
+    name: "merge",
+    version: "1.0",
+    author: "Vex_Kshitiz",
+    shortDescription: "Merge audio into a video",
+    longDescription: "Merge audio into a video by providing the audio link.",
+    category: "video",
+    guide: {
+      en: "!merge <audio_link>"
     }
+  },
+  onStart: async function ({ message, event, args, api }) {
+    try {
+      if (event.type !== "message_reply") {
+        return message.reply("❌ || Reply to a video to merge audio into it.");
+      }
+
+      const attachment = event.messageReply.attachments;
+      if (!attachment || attachment.length !== 1 || attachment[0].type !== "video") {
+        return message.reply("❌ || Please reply to a single video.");
+      }
+
+      const videoUrl = attachment[0].url;
+      const audioUrl = args[0];
+
+      const userVideoPath = path.join(cacheFolder, `video_${Date.now()}.mp4`);
+      const audioPath = path.join(cacheFolder, `audio_${Date.now()}.mp3`);
+      const mergedVideoPath = path.join(cacheFolder, `merged_${Date.now()}.mp4`);
+
+     
+      const responseVideo = await axios({
+        url: videoUrl,
+        method: 'GET',
+        responseType: 'stream'
+      });
+      const writerVideo = fs.createWriteStream(userVideoPath);
+      responseVideo.data.pipe(writerVideo);
+
+      await new Promise((resolve, reject) => {
+        writerVideo.on('finish', resolve);
+        writerVideo.on('error', reject);
+      });
+
+      
+      const responseAudio = await axios({
+        url: audioUrl,
+        method: 'GET',
+        responseType: 'stream'
+      });
+      const writerAudio = fs.createWriteStream(audioPath);
+      responseAudio.data.pipe(writerAudio);
+
+      await new Promise((resolve, reject) => {
+        writerAudio.on('finish', resolve);
+        writerAudio.on('error', reject);
+      });
+
+     
+      const ffmpegCommand = [
+        '-i', userVideoPath,
+        '-i', audioPath,
+        '-c:v', 'copy',
+        '-c:a', 'aac',
+        '-strict', 'experimental',
+        '-shortest',
+        '-map', '0:v:0',
+        '-map', '1:a:0',
+        mergedVideoPath
+      ];
+
+      exec(`${ffmpeg} ${ffmpegCommand.join(' ')}`, async (error, stdout, stderr) => {
+        if (error) {
+          console.error("FFmpeg error:", error);
+          message.reply("❌ || An error occurred during merging.");
+          return;
+        }
+        console.log("FFmpeg output:", stdout);
+        console.error("FFmpeg stderr:", stderr);
+
+     
+        message.reply({
+          attachment: fs.createReadStream(mergedVideoPath)
+        }).then(() => {
+       
+          fs.unlinkSync(userVideoPath);
+          fs.unlinkSync(audioPath);
+          fs.unlinkSync(mergedVideoPath);
+        }).catch((sendError) => {
+          console.error("Error sending video:", sendError);
+          message.reply("❌ || An error occurred while sending the merged video.");
+        });
+      });
+
+    } catch (error) {
+      console.error("Error:", error);
+      message.reply("❌ || An error occurred.");
+    }
+  }
 };
