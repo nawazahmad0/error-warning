@@ -35,7 +35,7 @@ module.exports = {
         }
       }
 
-      const response = await axios.get(`https://imagine-kshitiz-ad7d.onrender.com/mj?prompt=${encodeURIComponent(prompt)}&ratio=${encodeURIComponent(ratio)}`);
+      const response = await axios.get(`https://imagine-kshitiz-nsj3.onrender.com/mj?prompt=${encodeURIComponent(prompt)}&ratio=${encodeURIComponent(ratio)}`);
       const imageUrls = response.data.imageUrls;
 
       const imgData = [];
