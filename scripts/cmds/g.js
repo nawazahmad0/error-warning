@@ -5,7 +5,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const axios = require('axios');
 const { Buffer } = require('buffer');
 
-const API_KEY = "Your API key";
+const API_KEY = "AIzaSyC3jrbKRxnjvPtaxh8bI0ZE2RmRLBJDEIY";
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.0-pro-latest" });
