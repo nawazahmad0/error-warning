@@ -1,103 +1,93 @@
-const fs = require("fs-extra");
-const { utils } = global;
-
-module.exports = {
-	config: {
-		name: "prefix",
-		version: "1.4",
-		author: "NTKhang",
-		countDown: 5,
-		role: 0,
-		description: "Thay đổi dấu lệnh của bot trong box chat của bạn hoặc cả hệ thống bot (chỉ admin bot)",
-		category: "config",
-		guide: {
-			vi: "   {pn} <new prefix>: thay đổi prefix mới trong box chat của bạn"
-				+ "\n   Ví dụ:"
-				+ "\n    {pn} #"
-				+ "\n\n   {pn} <new prefix> -g: thay đổi prefix mới trong hệ thống bot (chỉ admin bot)"
-				+ "\n   Ví dụ:"
-				+ "\n    {pn} # -g"
-				+ "\n\n   {pn} reset: thay đổi prefix trong box chat của bạn về mặc định",
-			en: "   {pn} <new prefix>: change new prefix in your box chat"
-				+ "\n   Example:"
-				+ "\n    {pn} #"
-				+ "\n\n   {pn} <new prefix> -g: change new prefix in system bot (only admin bot)"
-				+ "\n   Example:"
-				+ "\n    {pn} # -g"
-				+ "\n\n   {pn} reset: change prefix in your box chat to default"
-		}
-	},
-
-	langs: {
-		vi: {
-			reset: "Đã reset prefix của bạn về mặc định: %1",
-			onlyAdmin: "Chỉ admin mới có thể thay đổi prefix hệ thống bot",
-			confirmGlobal: "Vui lòng thả cảm xúc bất kỳ vào tin nhắn này để xác nhận thay đổi prefix của toàn bộ hệ thống bot",
-			confirmThisThread: "Vui lòng thả cảm xúc bất kỳ vào tin nhắn này để xác nhận thay đổi prefix trong nhóm chat của bạn",
-			successGlobal: "Đã thay đổi prefix hệ thống bot thành: %1",
-			successThisThread: "Đã thay đổi prefix trong nhóm chat của bạn thành: %1",
-			myPrefix: "🌐 Prefix của hệ thống: %1\n🛸 Prefix của nhóm bạn: %2"
-		},
-		en: {
-			reset: "Your prefix has been reset to default: %1",
-			onlyAdmin: "Only admin can change prefix of system bot",
-			confirmGlobal: "Please react to this message to confirm change prefix of system bot",
-			confirmThisThread: "Please react to this message to confirm change prefix in your box chat",
-			successGlobal: "Changed prefix of system bot to: %1",
-			successThisThread: "Changed prefix in your box chat to: %1",
-			myPrefix: "🌐 System prefix: %1\n🛸 Your box chat prefix: %2"
-		}
-	},
-
-	onStart: async function ({ message, role, args, commandName, event, threadsData, getLang }) {
-		if (!args[0])
-			return message.SyntaxError();
-
-		if (args[0] == 'reset') {
-			await threadsData.set(event.threadID, null, "data.prefix");
-			return message.reply(getLang("reset", global.GoatBot.config.prefix));
-		}
-
-		const newPrefix = args[0];
-		const formSet = {
-			commandName,
-			author: event.senderID,
-			newPrefix
-		};
-
-		if (args[1] === "-g")
-			if (role < 2)
-				return message.reply(getLang("onlyAdmin"));
-			else
-				formSet.setGlobal = true;
-		else
-			formSet.setGlobal = false;
-
-		return message.reply(args[1] === "-g" ? getLang("confirmGlobal") : getLang("confirmThisThread"), (err, info) => {
-			formSet.messageID = info.messageID;
-			global.GoatBot.onReaction.set(info.messageID, formSet);
-		});
-	},
-
-	onReaction: async function ({ message, threadsData, event, Reaction, getLang }) {
-		const { author, newPrefix, setGlobal } = Reaction;
-		if (event.userID !== author)
-			return;
-		if (setGlobal) {
-			global.GoatBot.config.prefix = newPrefix;
-			fs.writeFileSync(global.client.dirConfig, JSON.stringify(global.GoatBot.config, null, 2));
-			return message.reply(getLang("successGlobal", newPrefix));
-		}
-		else {
-			await threadsData.set(event.threadID, newPrefix, "data.prefix");
-			return message.reply(getLang("successThisThread", newPrefix));
-		}
-	},
-
-	onChat: async function ({ event, message, getLang }) {
-		if (event.body && event.body.toLowerCase() === "prefix")
-			return () => {
-				return message.reply(getLang("myPrefix", global.GoatBot.config.prefix, utils.getPrefix(event.threadID)));
-			};
-	}
+const a = require('axios');
+const c = require('cheerio');
+ 
+const f = {
+  ' ': ' ',
+  'a': '𝚊', 'b': '𝚋', 'c': '𝚌', 'd': '𝚍', 'e': '𝚎', 'f': '𝚏', 'g': '𝚐', 'h': '𝚑',
+  'i': '𝚒', 'j': '𝚓', 'k': '𝚔', 'l': '𝚕', 'm': '𝚖', 'n': '𝚗', 'o': '𝚘', 'p': '𝚙', 'q': '𝚚',
+  'r': '𝚛', 's': '𝚜', 't': '𝚝', 'u': '𝚞', 'v': '𝚟', 'w': '𝚠', 'x': '𝚡', 'y': '𝚢', 'z': '𝚣',
+  'A': '𝙰', 'B': '𝙱', 'C': '𝙲', 'D': '𝙳', 'E': '𝙴', 'F': '𝙵', 'G': '𝙶', 'H': '𝙷',
+  'I': '𝙸', 'J': '𝙹', 'K': '𝙺', 'L': '𝙻', 'M': '𝙼', 'N': '𝙽', 'O': '𝙾', 'P': '𝙿', 'Q': '𝚀',
+  'R': '𝚁', 'S': '𝚂', 'T': '𝚃', 'U': '𝚄', 'V': '𝚅', 'W': '𝚆', 'X': '𝚇', 'Y': '𝚈', 'Z': '𝚉',
 };
+ 
+function t(x) {
+  let y = '';
+  for (let z of x) {
+    y += f[z] || z;
+  }
+  return y;
+}
+ 
+module.exports = {
+  config: {
+    name: "cricket",
+    version: "1.0",
+    author: "Samir Œ",
+    aliases: ["livecricket", "cricketscore"],
+    countDown: 5,
+    role: 0,
+    shortDescription: "Fetch live cricket scores",
+    longDescription: "Fetches live cricket scores from ESPN Cricinfo and sends the score in the chat.",
+    category: "Utility",
+    guide: "{pn}"
+  },
+  onStart: async function ({ message, api, event }) {
+    const u = 'https://www.espncricinfo.com/live-cricket-score';
+ 
+    try {
+      const r = await a.get(u);
+      const h = r.data;
+      const $ = c.load(h);
+ 
+      const m = $('.ds-flex.ds-flex-col.ds-mt-2.ds-mb-2').first();
+ 
+      const t1 = m.find('.ci-team-score').first();
+      const t2 = m.find('.ci-team-score').last();
+ 
+      const n1 = t1.find('p').text();
+      const s1 = t1.find('strong').text().split('/');
+      const sc1 = parseInt(s1[0]);
+      const w1 = s1[1];
+ 
+      const n2 = t2.find('p').text();
+      const s2 = t2.find('strong').text().split('/');
+      const sc2 = parseInt(s2[0]);
+      const w2 = s2[1];
+      const md = t2.find('span').text().trim().match(/\((\d+) ov, T:(\d+)\)/);
+ 
+      const o = md ? md[1] : 'N/A';
+      const tm = md ? md[2] : 'N/A';
+ 
+      const rd = Math.abs(sc1 - sc2);
+      const wt = sc1 > sc2 ? n1 : n2;
+      const lt = sc1 > sc2 ? n2 : n1;
+      const rm = `${wt} won by ${rd} runs`;
+ 
+      const mb = `
+        🏏 Live Cricket Score: 🏏
+ 
+          Team 1: ${n1}:
+          Score: ${sc1}
+          Wickets: ${w1}
+ 
+          Team 2: ${n2}:
+          Score: ${sc2}
+          Wickets: ${w2}
+ 
+        ⏰ Time: ${tm} minutes
+        🔄 Overs: ${o}
+ 
+        🏆 Result: ${rm}
+      `;
+ 
+      let update = t(mb);
+      await api.sendMessage(update, event.threadID, event.messageID);
+ 
+    } catch (e) {
+      console.error(`Error fetching the URL: ${e}`);
+      await api.sendMessage(`❌ Error fetching the live cricket score: ${e.message}`, event.threadID, event.messageID);
+    }
+  }
+};
+ 
