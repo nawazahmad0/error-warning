@@ -35,7 +35,7 @@ module.exports = {
         return;
       }
 
-      const response = await axios.get('https://cricket-kshitiz.vercel.app/live', { responseType: 'arraybuffer' });
+      const response = await axios.get('https://cricket-kshitiz.vercel.app/today', { responseType: 'arraybuffer' });
       const imageData = response.data;
 
       const cacheFolderPath = path.join(__dirname, 'cache');
@@ -47,10 +47,10 @@ module.exports = {
 
 
       const crop = {
-        top: 50,
-        bottom: 30,
-        left: 605,
-        right: 605
+        top: 300,
+        bottom: 320,
+        left: 200,
+        right: 30
       };
 
       const image = await loadImage(imagePath);
