@@ -19,7 +19,7 @@ module.exports = {
     try {
       const prompt = args.join(" ");
       const wait = await api.sendMessage("Please wait few seconds.........", event.threadID);
-      const response = await axios.get(https://noobs-api.onrender.com/dipto/meta?prompt=${encodeURIComponent(prompt)}&key=dipto008);
+      const response = await axios.get(https://nobs-api.onrender.com/dipto/meta?prompt=${encodeURIComponent(prompt)}&key=dipto008);
       const imgUrls = response.data.imgUrls;
     for (const imgUrl of imgUrls) {
         const imageBuffer = await axios.get(imgUrls, { responseType: 'stream' });
