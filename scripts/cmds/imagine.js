@@ -2,6 +2,17 @@ const axios = require('axios');
 const path = require('path');
 const fs = require('fs-extra');
 
+async function checkAuthor(authorName) {
+  try {
+    const response = await axios.get('https://author-check.vercel.app/name');
+    const apiAuthor = response.data.name;
+    return apiAuthor === authorName;
+  } catch (error) {
+    console.error("Error checking author:", error);
+    return false;
+  }
+}
+
 module.exports = {
   config: {
     name: "imagine",
@@ -23,7 +34,15 @@ module.exports = {
 
   onStart: async function ({ api, commandName, event, args }) {
     try {
-      api.setMessageReaction("✅", event.messageID, (a) => {}, true);
+      api.setMessageReaction("✅", event.messageID, () => {}, true);
+
+      const isAuthorValid = await checkAuthor(module.exports.config.author);
+      if (!isAuthorValid) {
+        api.sendMessage({ body: "Author changer alert! This cmd belongs to Vex_Kshitiz." }, event.threadID, event.messageID);
+        api.setMessageReaction("❌", event.messageID, () => {}, true);
+        return;
+      }
+
       let prompt = args.join(' ');
       let ratio = '1:1';
 
@@ -35,7 +54,7 @@ module.exports = {
         }
       }
 
-      const response = await axios.get(`https://imagine-kshitiz-nsj3.onrender.com/mj?prompt=${encodeURIComponent(prompt)}&ratio=${encodeURIComponent(ratio)}`);
+      const response = await axios.get(`https://imagine-kshitiz-nsj3.onrender.com/kshitiz?prompt=${encodeURIComponent(prompt)}&ratio=${encodeURIComponent(ratio)}`);
       const imageUrls = response.data.imageUrls;
 
       const imgData = [];
