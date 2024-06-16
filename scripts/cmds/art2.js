@@ -1,138 +1,89 @@
-const fs = require('fs');
-const axios = require('axios');
-const path = require('path');
+const axios = require("axios");
+const fs = require("fs");
+const FormData = require("form-data");
+const path = require("path");
 
 module.exports = {
   config: {
-    name: 'art2',
-    version: '1.5',
-    author: 'Mr Stoic',
-    countDown: 0,
-    role: 0,
-  shortDescription: {
-      vi: "",
-      en: "Transform Image To Ai Image"
-    },
-    category: "Ai Generations",
+    name: "art",
+    author: "ST | Sheikh Tamim",
+    description: "Art Image Generator",
+    category: "Art Generation",
     guide: {
-      vi: "",
-      en: "Reply to an image and type -art"
-    },
+      en: `Reply to an image with: art <prompt> | <model> | <control>\nthere are 3 model available and 5 control`
+    }
   },
 
-  onStart: async function ({ event, api, args, message }) {
-    let imageUrl;
-
-    if (event.type === "message_reply") {
-      if (["photo", "sticker"].includes(event.messageReply.attachments[0]?.type)) {
-        imageUrl = event.messageReply.attachments[0].url;
-      } else {
-        return api.sendMessage({ body: "❌ | Reply must be an image." }, event.threadID);
-      }
-    } else if (args[0]?.match(/(https?:\/\/.*\.(?:png|jpg|jpeg))/g)) {
-      imageUrl = args[0];
-    } else {
-      return api.sendMessage({ body: "❌ | Reply to an image." }, event.threadID);
-    }
-
-    message.reply("✅ | Transforming your image...", async (err, info) => {
-      if (err) {
-        console.error(err);
+  onStart: async function ({ api, event }) {
+    try {
+      if (!event.messageReply) {
+        await api.sendMessage("⚠️ | Please reply to an image to use this command.", event.threadID, event.messageID);
         return;
       }
 
-      const api_key = '3d0a1d4c-5251-4643-b094-6c1220745968';
-      const prompt = args.slice(1).join(' ');
-      let aspect_ratio = "square";
-
-      try {
-        const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
-        const imageBuffer = Buffer.from(response.data);
-        const dimensions = await getImageDimensions(imageBuffer);
-        const ratio = dimensions.width / dimensions.height;
-
-        if (ratio > 1.4) {
-          aspect_ratio = "landscape";
-        } else if (ratio < 0.8) {
-          aspect_ratio = "portrait";
-        }
-      } catch (error) {
-        console.error("Error getting image dimensions:", error);
+      const repliedMessage = event.messageReply;
+      if (!repliedMessage.attachments.length) {
+        await api.sendMessage("⚠️ | The replied message does not contain an image.", event.threadID, event.messageID);
+        return;
       }
 
-      async function generateImage(imageUrl, prompt) {
-        try {
-          const options = {
-            method: 'POST',
-            url: 'https://api.prodia.com/v1/sd/transform',
-            headers: {
-              accept: 'application/json',
-              'content-type': 'application/json',
-              'X-Prodia-Key': api_key,
-            },
-            data: {
-              imageUrl: imageUrl,
-              prompt: prompt,
-              model: 'meinamix_meinaV9.safetensors [2ec66ab0]',
-              denoising_strength: 0.40,
-              negative_prompt: 'worst quality, normal quality, low quality, low res, blurry, text, watermark, logo, banner, extra digits, cropped, jpeg artifacts, signature, username, error, sketch ,duplicate, ugly, monochrome, horror, geometry, mutation, disgusting, bad anatomy, bad hands, three hands, three legs, bad arms, missing legs, missing arms, poorly drawn face, bad face, fused face, cloned face, worst face, three crus, extra crus, fused crus, worst feet, three feet, fused feet, fused thigh, three thigh, fused thigh, extra thigh, worst thigh, missing fingers, extra fingers, ugly fingers, long fingers, horn, realistic photo, extra eyes, huge eyes, 2girl, amputation, disconnected limbs',
-style_preset: 'anime',
-              sampler: 'Euler a',
-              steps: 50,
-              cfg_scale: 8,
-              seed: -1,
-              upscale: true,
-              aspect_ratio: aspect_ratio,
-            },
-          };
+      const imageUrl = repliedMessage.attachments[0].url;
 
-          const response = await axios(options);
-          const job = response.data.job;
+      const commandText = event.body.trim();
+      const commandParts = commandText.split("|").map(part => part.trim());
 
-          while (true) {
-            const jobResponse = await axios.get(`https://api.prodia.com/v1/job/${job}`, {
-              headers: {
-                accept: 'application/json',
-                'X-Prodia-Key': api_key,
-              },
-            });
-
-            if (jobResponse.data.status === 'succeeded') {
-              return jobResponse.data.imageUrl;
-            }
-
-            await new Promise(resolve => setTimeout(resolve, 500));
-          }
-        } catch (err) {
-          console.error(err);
-          throw err;
-        }
+      if (commandParts.length !== 3) {
+        await api.sendMessage("⚠️ | Invalid command format. Please use: art <prompt> | <model> | <control>", event.threadID, event.messageID);
+        return;
       }
 
-      try {
-        const imageLink = await generateImage(imageUrl, prompt);
-        console.log('Generated image URL:', imageLink);
+      const prompt = commandParts[0].trim();
+      const model = parseInt(commandParts[1].trim());
+      const control = parseInt(commandParts[2].trim());
 
-        const response = await axios.get(imageLink, { responseType: 'arraybuffer' });
-        const imageBuffer = Buffer.from(response.data);
-
-        const imageFileName = 'generated_image.png';
-        const imagePath = path.join(__dirname, imageFileName);
-        fs.writeFileSync(imagePath, imageBuffer);
-
-        await api.sendMessage({
-          body: `✅ | Image Transformed\n\n`,
-          attachment: fs.createReadStream(imagePath),
-        }, event.threadID);
-      } catch (error) {
-        console.error(error);
+      if (isNaN(model) || model < 1 || model > 3) {
+        await api.sendMessage("⚠️ | Model number should be between 1 and 3.", event.threadID, event.messageID);
+        return;
       }
-    });
+
+      if (isNaN(control) || control < 1 || control > 5) {
+        await api.sendMessage("⚠️ | Control number should be between 1 and 5.", event.threadID, event.messageID);
+        return;
+      }
+
+      const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+
+      const formData = new FormData();
+      formData.append('model', model);
+      formData.append('control', control);
+      formData.append('prompt', prompt);
+      formData.append('image', Buffer.from(response.data, 'binary'), 'image.jpg');
+
+      const apiResponse = await axios.post('https://beb-anime-convert.onrender.com/generate-image', formData, {
+        headers: {
+          ...formData.getHeaders(),
+        },
+        responseType: 'arraybuffer'
+      });
+
+      const imageBuffer = Buffer.from(apiResponse.data, 'binary');
+
+      
+      const imagePath = path.join(__dirname, 'generated-image.jpg');
+      fs.writeFileSync(imagePath, imageBuffer);
+
+      
+      await api.sendMessage({
+        attachment: fs.createReadStream(imagePath),
+        body: `Generated image based on: ${prompt}`
+      }, event.threadID);
+
+      
+      fs.unlinkSync(imagePath);
+
+    } catch (error) {
+      console.error('Error processing art command:', error);
+      await api.sendMessage("⚠️ | Error processing art command. Please try again later.", event.threadID, event.messageID);
+    }
   }
 };
-
-async function getImageDimensions(imageBuffer) {
-  const imageSize = require('image-size');
-  const dimensions = imageSize(imageBuffer);
-  return dimensions;
-        }
