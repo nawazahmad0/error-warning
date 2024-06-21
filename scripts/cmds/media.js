@@ -8,6 +8,7 @@ async function video(api, event, args, message) {
     try {
         let title = '';
         let shortUrl = '';
+        let videoId = '';
 
         const extractShortUrl = async () => {
             const attachment = event.messageReply.attachments[0];
@@ -18,7 +19,6 @@ async function video(api, event, args, message) {
             }
         };
 
-        let videoId = '';
         if (event.messageReply && event.messageReply.attachments && event.messageReply.attachments.length > 0) {
             shortUrl = await extractShortUrl();
             const musicRecognitionResponse = await axios.get(`https://audio-recom.onrender.com/kshitiz?url=${encodeURIComponent(shortUrl)}`);
@@ -39,9 +39,9 @@ async function video(api, event, args, message) {
                 videoId = searchResponse.data[0].videoId;
             }
 
-            const videoUrl = await axios.get(`https://youtube-kshitiz.vercel.app/download?id=${encodeURIComponent(videoId)}`);
-            if (videoUrl.data.length > 0) {
-                shortUrl = await shortenURL(videoUrl.data[0]);
+            const videoUrlResponse = await axios.get(`https://youtube-kshitiz.vercel.app/download?id=${encodeURIComponent(videoId)}`);
+            if (videoUrlResponse.data.length > 0) {
+                shortUrl = await shortenURL(videoUrlResponse.data[0]);
             }
         }
 
@@ -51,12 +51,13 @@ async function video(api, event, args, message) {
         }
 
         const downloadResponse = await axios.get(`https://youtube-kshitiz.vercel.app/download?id=${encodeURIComponent(videoId)}`);
-        if (downloadResponse.data.length === 0) {
+        const videoUrl = downloadResponse.data[0]; 
+
+        if (!videoUrl) {
             message.reply("Failed to retrieve download link for the video.");
             return;
         }
 
-        const videoUrl = downloadResponse.data[1];
         const writer = fs.createWriteStream(path.join(__dirname, "cache", `${videoId}.mp4`));
         const response = await axios({
             url: videoUrl,
@@ -68,17 +69,17 @@ async function video(api, event, args, message) {
 
         writer.on('finish', () => {
             const videoStream = fs.createReadStream(path.join(__dirname, "cache", `${videoId}.mp4`)); 
-            message.reply({ body: `📹 Playing: ${title}\nDownload Link: ${shortUrl}`, attachment: videoStream });
+            message.reply({ body: `📹 Playing: ${title}`, attachment: videoStream });
             api.setMessageReaction("✅", event.messageID, () => {}, true);
         });
 
         writer.on('error', (error) => {
             console.error("Error:", error);
-            message.reply("error");
+            message.reply("Error downloading the video.");
         });
     } catch (error) {
         console.error("Error:", error);
-        message.reply("error");
+        message.reply("An error occurred.");
     }
 }
 
