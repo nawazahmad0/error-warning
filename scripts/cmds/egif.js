@@ -14,7 +14,7 @@ module.exports = {
   onStart: async function ({ api, args, event }) {
     try {
       const emoji = encodeURIComponent(args.join(" "));
-      const apiUrl = `https://apis-samir.onrender.com/egif?emoji=${emoji}`;
+      const apiUrl = `https://samirxpikachu.onrender.com/egif?emoji=${emoji}`;
 
       const gifUrl = await global.utils.getStreamFromURL(apiUrl);
 
