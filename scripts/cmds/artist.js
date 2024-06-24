@@ -7,7 +7,7 @@ module.exports = {
     name: "artist",
     aliases: [],
     version: "1.0",
-    author: "ST | Sheikh Tamim",//m.me/sheikh.tamim.lover for contact if there any issue
+    author: "ST | Sheikh Tamim", //m.me/sheikh.tamim.lover for contact if there any issue
     role: 0,
     countDown: 15,
     category: "Artist AI",
@@ -122,6 +122,11 @@ All the style name :-
       const input = args.join(" ").split("|").map(arg => arg.trim());
       const [prompt, model, style] = input;
 
+      if (prompt.split(" ").length < 10) {
+        await api.sendMessage("⚠️ | Please provide a prompt with more than 10 words.", event.threadID, event.messageID);
+        return;
+      }
+
       const modelNo = parseInt(model, 10);
       const styleNo = parseInt(style, 10);
 
@@ -157,22 +162,22 @@ Please wait a few seconds...`, event.threadID);
       for (let i = 0; i < images.length; i++) {
         const base64String = images[i];
 
-        
+
         const imageBuffer = Buffer.from(base64String, 'base64');
 
-        
+
         const tempFilePath = path.join(__dirname, `generated_image_${i + 1}.jpg`);
         fs.writeFileSync(tempFilePath, imageBuffer);
 
-        
+
         const imageStream = fs.createReadStream(tempFilePath);
 
-        
+
         attachments.push(imageStream);
       }
 
       await api.unsendMessage(w.messageID);
-      
+
       await api.sendMessage({
         attachment: attachments,
         body: `
@@ -183,9 +188,9 @@ Style: ${styleNo}
 Here are your generated images`,
       }, event.threadID);
 
-      
-      
-      
+
+
+
       for (let i = 0; i < images.length; i++) {
         const tempFilePath = path.join(__dirname, `generated_image_${i + 1}.jpg`);
         fs.unlinkSync(tempFilePath);
