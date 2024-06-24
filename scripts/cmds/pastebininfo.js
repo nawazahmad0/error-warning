@@ -19,7 +19,7 @@ module.exports = {
     }
 
     try {
-      const apiUrl = `https://apis-samir.onrender.com/pastebin/userinfo?name=${encodeURIComponent(username)}`;
+      const apiUrl = `https://samirxpikachu.onrender.com/pastebin/userinfo?name=${encodeURIComponent(username)}`;
       const response = await axios.get(apiUrl);
       const userInfo = response.data;
 
