@@ -57,7 +57,7 @@ async function gpt(text, userID, message, userName, commandName) {
 
   try {
     const query = `- Current prompt: ${text}\n\n - Conversation:\n${tracker[userID]}\n`;
-    const url = `https://apis-samir.onrender.com/liner?prompt=${encodeURIComponent(query)}`;
+    const url = `https://samirxpikachu.onrender.com/liner?prompt=${encodeURIComponent(query)}`;
     const response = await axios.get(url, {
       headers: {
         'Content-Type': 'application/json',
