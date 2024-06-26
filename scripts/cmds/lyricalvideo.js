@@ -7,8 +7,8 @@ module.exports = {
   threadStates: {},
 
   config: {
-    name: 'lyricalvideo',
-    aliases: ['lvd'],
+    name: 'lv',
+    aliases: ['lev'],
     version: '1.0',
     author: 'Kshitiz',
     countDown: 5,
@@ -32,14 +32,14 @@ module.exports = {
     try {
       api.setMessageReaction("🕐", event.messageID, (err) => {}, true);  
 
-      const apiUrl = "https://lyricalvideo-up65.onrender.com/kshitiz";  
+      const apiUrl = "https://lyrics-video.vercel.app/kshitiz";  
       const response = await axios.get(apiUrl);
 
       if (response.data.url) {
         const tikTokUrl = response.data.url;
         console.log(` Video URL: ${tikTokUrl}`);
 
-        const turtleApiUrl = `https://tikdl-js.onrender.com/tiktok?url=${encodeURIComponent(tikTokUrl)}`;
+        const turtleApiUrl = `https://tikdl-video.vercel.app/tiktok?url=${encodeURIComponent(tikTokUrl)}`;
         const turtleResponse = await axios.get(turtleApiUrl);
 
         if (turtleResponse.data.videoUrl) {
