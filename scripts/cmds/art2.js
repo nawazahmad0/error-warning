@@ -8,7 +8,7 @@ module.exports = {
     name: "art",
     author: "ST | Sheikh Tamim",
     description: "Art Image Generator",
-    category: "Art Generation",
+    category: "Art Generator",
     guide: {
       en: `Reply to an image with: art <prompt> | <model> | <control>\nthere are 3 model available and 5 control`
     }
@@ -32,23 +32,26 @@ module.exports = {
       const commandText = event.body.trim();
       const commandParts = commandText.split("|").map(part => part.trim());
 
-      if (commandParts.length !== 3) {
-        await api.sendMessage("⚠️ | Invalid command format. Please use: art <prompt> | <model> | <control>", event.threadID, event.messageID);
-        return;
+      let prompt, model = 1, control = 1;
+
+      if (commandParts.length >= 1) {
+        prompt = commandParts[0].trim();
       }
 
-      const prompt = commandParts[0].trim();
-      const model = parseInt(commandParts[1].trim());
-      const control = parseInt(commandParts[2].trim());
-
-      if (isNaN(model) || model < 1 || model > 3) {
-        await api.sendMessage("⚠️ | Model number should be between 1 and 3.", event.threadID, event.messageID);
-        return;
+      if (commandParts.length >= 2) {
+        model = parseInt(commandParts[1].trim());
+        if (isNaN(model) || model < 1 || model > 3) {
+          await api.sendMessage("⚠️ | Model number should be between 1 and 3. Using default (1).", event.threadID, event.messageID);
+          model = 1; // Default to model 1 if invalid
+        }
       }
 
-      if (isNaN(control) || control < 1 || control > 5) {
-        await api.sendMessage("⚠️ | Control number should be between 1 and 5.", event.threadID, event.messageID);
-        return;
+      if (commandParts.length >= 3) {
+        control = parseInt(commandParts[2].trim());
+        if (isNaN(control) || control < 1 || control > 5) {
+          await api.sendMessage("⚠️ | Control number should be between 1 and 5. Using default (1).", event.threadID, event.messageID);
+          control = 1; // Default to control 1 if invalid
+        }
       }
 
       const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
@@ -68,17 +71,17 @@ module.exports = {
 
       const imageBuffer = Buffer.from(apiResponse.data, 'binary');
 
-      
+
       const imagePath = path.join(__dirname, 'generated-image.jpg');
       fs.writeFileSync(imagePath, imageBuffer);
 
-      
+
       await api.sendMessage({
         attachment: fs.createReadStream(imagePath),
         body: `Generated image based on: ${prompt}`
       }, event.threadID);
 
-      
+
       fs.unlinkSync(imagePath);
 
     } catch (error) {
