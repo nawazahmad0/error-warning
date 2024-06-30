@@ -10,7 +10,7 @@ module.exports = {
             vi: "Lấy thông tin tuổi dựa trên ngày sinh.",
             en: "Get age information based on the birthdate."
         },
-        category: "Tools",
+        category: "UTILITY",
         guide: {
             vi: "{pn} <ngày sinh (DD-MM-YYYY)>",
             en: "{pn} <birthdate (DD-MM-YYYY)>"
@@ -21,13 +21,12 @@ module.exports = {
         const birthdate = args[0];
 
         try {
-            const response = await axios.get(`https://age-calculator-rubish.onrender.com/rubish-ac?birthdate=${birthdate}`);
+            const response = await axios.get(`${global.GoatBot.config.rubishapi}/agecalculator?birthdate=${birthdate}&apikey=rubish69`);
             const data = response.data;
 
             const formattedResponse = `
-✅ | 𝗔𝗚𝗘 𝗜𝗡𝗙𝗢𝗥𝗠𝗔𝗧𝗜𝗢𝗡 | ✅
-﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
-
+╟    𝗔𝗚𝗘 𝗜𝗡𝗙𝗢𝗥𝗠𝗔𝗧𝗜𝗢𝗡    ╢
+﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌
 📅 Birthdate: ${birthdate}
 
 🎂 Age: ${data.ageData.age.years} years ${data.ageData.age.months} months ${data.ageData.age.days} days
@@ -40,16 +39,23 @@ module.exports = {
   - Hours: ${data.ageData.totalAge.hours}
   - Minutes: ${data.ageData.totalAge.minutes}
   - Seconds: ${data.ageData.totalAge.seconds}
-  
+
 🎉 Next Birthday: ${data.ageData.nextBirthday.dayName}, ${data.ageData.nextBirthday.remainingMonths} months ${data.ageData.nextBirthday.remainingDays} days
 
-🖼️ Image URL: ${data.imageURL}
+🖼️ Image URL: ${data.imgbbImageUrl}
 `;
 
-            await api.sendMessage({
-                body: formattedResponse,
-                attachment: await global.utils.getStreamFromURL(data.imageURL)
-            }, event.threadID);
+            if (typeof data.imgbbImageUrl === 'string' && data.imgbbImageUrl) {
+                const attachment = await global.utils.getStreamFromURL(data.imgbbImageUrl);
+                await api.sendMessage({
+                    body: formattedResponse,
+                    attachment
+                }, event.threadID);
+            } else {
+                await api.sendMessage({
+                    body: formattedResponse
+                }, event.threadID);
+            }
         } catch (error) {
             console.error('Error fetching age data:', error);
             api.sendMessage("An error occurred while processing the request.", event.threadID);
