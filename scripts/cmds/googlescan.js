@@ -2,20 +2,16 @@ const axios = require('axios');
  
 module.exports = {
     config: {
-        name: "glen",
-        version: "1.0",
+        name: "lens",
+        version: "1.1",
         author: "Samir Œ",
         countDown: 5,
         role: 0,
-        shortDescription: {
-            vi: "Tìm kiếm hình ảnh",
-            en: "Search for images source"
-        },
-        longDescription: {
+        description: {
             vi: "Tìm kiếm hình ảnh và hiển thị kết quả từ URL",
             en: "Search for images and display results from source URL"
         },
-        category: "utility",
+        category: "𝗨𝗧𝗜𝗟𝗜𝗧𝗬",
     },
     onStart: async function ({ api, args, message, event }) {
         let imageUrl;
@@ -30,14 +26,14 @@ module.exports = {
  
         try {
             const response = await axios.get(`https://samirxpikachu.onrender.com/glens?url=${encodeURIComponent(imageUrl)}`);
-            const results = response.data.results[0].content.results.organic.slice(0, 6);
+            const results = response.data.slice(0, 6);
  
             if (results.length > 0) {
                 const trackInfo = results.map((result, index) => 
-                    `${index + 1}. ${result.title}\nURL: ${result.url}`
+                    `${index + 1}. ${result.title}\nURL: ${result.link}\n`
                 ).join("\n\n");
  
-                const thumbnails = results.map(result => result.url_thumbnail);
+                const thumbnails = results.map(result => result.thumbnail);
                 const attachments = await Promise.all(
                     thumbnails.map(thumbnail => 
                         global.utils.getStreamFromURL(thumbnail)
