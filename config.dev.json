@@ -28,7 +28,7 @@
   },
   "nickNameBot": "▄︻デ❲•𝐀𝐀𝐃𝐈•❳ 𝙡𝙚𝙜𝙚𝙣𝙙❹❷⓿ 🙄🤠══━一",
   "prefix": "/",
-  "api": "https://nobs-api.onrender.com/dipto",
+  "api": "www.noobs-api.000.pe/dipto",
   "database": {
     "type": "sqlite",
     "uriMongodb": "",
