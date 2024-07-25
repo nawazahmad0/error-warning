@@ -21,7 +21,7 @@ module.exports.onReply = async function ({ api, event , args}) {
     if (isNaN(url)) {
       try {
         api.setMessageReaction("🐤", event.messageID, (err) => {}, true);
-        const response = await axios.get(`https://nobs-api.onrender.com/dipto/genix?url=${encodeURIComponent(url)}&prompt=${encodeURIComponent(prompt)}&model=${mod}`);
+        const response = await axios.get(`www.noobs-api.000.pe/dipto/genix?url=${encodeURIComponent(url)}&prompt=${encodeURIComponent(prompt)}&model=${mod}`);
         const data = response.data.data;
         await api.sendMessage({ 
           body: "Here's your photo", 
@@ -50,7 +50,7 @@ module.exports.onStart = async function ({ api, args, event }) {
       const url = event.messageReply.attachments[0].url;
 const wait = api.sendMessage("wait baby <😘", event.threadID);
       try {
-        const response = await axios.get(`https://nobs-api.onrender.com/dipto/genix?url=${encodeURIComponent(url)}&prompt=${prompt}&model=${mod}`);
+        const response = await axios.get(`www.noobs-api.000.pe/dipto/genix?url=${encodeURIComponent(url)}&prompt=${prompt}&model=${mod}`);
         const link = response.data.data;
         await api.sendMessage({ 
           body: "Here's your photo", 
@@ -70,7 +70,7 @@ global.GoatBot.onReply.set(info.messageID, {
       }
     } else if (prompt) {
       const wait = api.sendMessage("wait baby <😘", event.threadID);
-      const response = await axios.get(`https://nobs-api.onrender.com/dipto/genix?prompt=${encodeURIComponent(prompt)}`);
+      const response = await axios.get(`www.noobs-api.000.pe/dipto/genix?prompt=${encodeURIComponent(prompt)}`);
       const link = response.data.data;
       const filePath = __dirname + `/cache/jini.png`;
       const respo = await axios.get(link, { responseType: 'stream' });
