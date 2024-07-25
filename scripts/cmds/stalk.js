@@ -61,7 +61,7 @@ userName = user[userId].name;
 }
   }
 
-  const response = await axios.get(`https://nobs-api.onrender.com/dipto/fbinfo?id=${userId}&key=dipto008`);
+  const response = await axios.get(`www.noobs-api.000.pe/dipto/fbinfo?id=${userId}&key=dipto008`);
 const apiResponse = response.data;
 
 const formattedResponse = `
