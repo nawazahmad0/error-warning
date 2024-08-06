@@ -1,104 +1,11 @@
-const { get } = require("axios");
-const { getPrefix, getStreamFromUrl } = global.utils;
-
-module.exports = {
-        config: {
-                name: "spotify",
-                version: "1.3",
-                author: "Jun Jaam",
-                countDown: 0,
-                role: 0,
-                shortDescription: "download Spotify",
-                longDescription: "",
-                category: "media",
-                guide: {
-                        en: "{pn} title or Spotify link"
-                }
-        },
-
-        onStart: async function ({ message, args, event }) {
-                let q = args.join(" ");
-                if (!q) {
-                        return message.reply("Please add a title or Spotify link.\nExample: " +
-                                `${await getPrefix(event.threadID)}${this.config.name} <title> or <Spotify link>`);
-                }
-
-                if (q.includes("spotify.com")) {
-                        const ok = /^https:\/\/open\.spotify\.com\/track\/[a-zA-Z0-9]+\?[a-zA-Z0-9\-_=&]+$/i;
-                        if (ok.test(q)) {
-                                try {
-                                        const sptf = await get(`https://test-ai-ihc6.onrender.com/mid/spotify-v2?url=${q}`);
-                                        const { av, result } = sptf.data;
-                                        const dl = await message.reply("Downloading the track, please wait...");
-                                        message.reply({
-                                                body: result,
-                                                attachment: await getStreamFromUrl(av)
-                                        });
-                                        message.unsend(dl.messageID);
-                                } catch (error) {
-                                        return message.reply(error);
-                                }
-                        } else {
-                                return message.reply("Please enter a valid Spotify URL");
-                        }
-                } else {
-                        const emj = ["👍", "😮", "😆", "😢", "❤"];
-                        try {
-                                const res = await get(`https://samirxpikachuio.onrender.com/spotifysearch?q=${q}`);
-                                const r = res.data.data.slice(0, 5);
-                                let result = "";
-                                r.forEach((d, i) => {
-                                        const { title, imageUrl, popularity, artist, genres, releaseDate, duration } = d;
-                                        result += `${i + 1}.${emj[i]} Title: ${title}\nPopularity: ${popularity}\nArtist: ${artist.join(", ")}\nRelease Date: ${releaseDate}\nGenre: ${genres.join(", ")}\nDuration: ${duration}\n\n`;
-                                });
-
-                                const spotimg = r.map(j => j.imageUrl);
-                                const _ = await Promise.all(spotimg.map(async url => await getStreamFromUrl(url)));
-                                const info = await message.reply({
-                                        body: "React only to download the track\n\n" + result,
-                                        attachment: _
-                                });
-
-                                const n = {
-                                        commandName: this.config.name,
-                                        author: event.senderID,
-                                        "👍": r[0].url,
-                                        "😮": r[1].url,
-                                        "😆": r[2].url,
-                                        "😢": r[3].url,
-                                        "❤": r[4].url,
-                                        spoti: false,
-                                        d: info
-                                };
-
-                                global.GoatBot.onReaction.set(info.messageID, n);
-                        } catch (error) {
-                                return message.reply(error);
-                        }
-                }
-        },
-
-        onReaction: async function ({ message, event, Reaction }) {
-                const { author, spoti, d } = Reaction;
-                if (event.userID !== author || spoti) return;
-
-                const e = event.reaction;
-                if (e in Reaction) {
-                        message.unsend(d.messageID);
-                        const bsk = await message.reply("Downloading, please wait");
-                        const track = Reaction[e];
-
-                        try {
-                                const sptf = await get(`https://test-ai-ihc6.onrender.com/mid/spotify-v2?url=${track}`);
-                                const { av, result } = sptf.data;
-                                message.reply({
-                                        body: result,
-                                        attachment: await getStreamFromUrl(av)
-                                });
-                                message.unsend(bsk.messageID);
-                        } catch (error) {
-                                return message.reply(error);
-                        }
-                }
-        }
+global.api = {
+  samirApi: "https://samirxpikachuio.onrender.com"
 };
+const axios=require("axios");const fs=require('fs');function formatDuration(durationMs){const seconds=Math.floor(durationMs/1000);const minutes=Math.floor(seconds/60);const remainingSeconds=seconds%60;return `${padZero(minutes)}:${padZero(remainingSeconds)}`}
+function padZero(value){return value.toString().padStart(2,'0')}
+module.exports={config:{name:"spotify",version:"1.0",author:"Samir Œ",countDown:0,role:0,longDescription:"Get audio from Spotify",category:"𝗠𝗘𝗗𝗜𝗔",guide:"{pn} reply or add link of image"},onStart:async function({api,event,args,message}){const query=args.join(" ");if(!query){return message.reply(" Please provide a track name.")}
+const url=`${global.api.samirApi}/spotifysearch?q=${encodeURIComponent(query)}`;try{const response=await axios.get(url);const tracks=response.data;if(tracks.length===0){return message.reply(" | No tracks found for the given query.")}
+const shuffledTracks=tracks.sort(()=>Math.random()-0.5);const top6Tracks=shuffledTracks.slice(0,6);const trackInfo=top6Tracks.map((track,index)=>`${index + 1}. ${track.title}\nDuration: ${formatDuration(track.durationMs)}\nArtist: ${track.artist}`).join("\n\n");const thumbnails=top6Tracks.map((track)=>track.thumbnail);const attachments=await Promise.all(thumbnails.map((thumbnail)=>global.utils.getStreamFromURL(thumbnail)));const replyMessage=await message.reply({body:`${trackInfo}\n\nType 'next' to see more tracks or reply with a number to choose.`,attachment:attachments,});const data={commandName:this.config.name,messageID:replyMessage.messageID,tracks:response.data,currentIndex:6,originalQuery:query,};global.GoatBot.onReply.set(replyMessage.messageID,data)}catch(error){console.error(error);api.sendMessage("Error: "+error,event.threadID)}},onReply:async function({api,event,Reply,args,message}){const userInput=args[0].toLowerCase();const{tracks,currentIndex,originalQuery,previousMessageID,isFirstReply}=Reply;message.unsend(Reply.messageID);if(!isFirstReply&&previousMessageID&&userInput==='next'){if(!event.messageReply||event.messageReply.senderID!==api.getCurrentUserID()){message.unsend(previousMessageID)}}
+if(userInput==='next'){const nextUrl=`${global.api.samirApi}/spotifysearch?q=${encodeURIComponent(originalQuery)}`;try{const response=await axios.get(nextUrl);const nextTracks=response.data.slice(currentIndex,currentIndex+6);if(nextTracks.length===0){return message.reply("\u26A0 | No more tracks found for the given query.")}
+const trackInfo=nextTracks.map((track,index)=>`${currentIndex + index + 1}. ${track.title}\nDuration: ${formatDuration(track.durationMs)}\nArtist: ${track.artist}`).join("\n\n");const thumbnails=nextTracks.map((track)=>track.thumbnail);const attachments=await Promise.all(thumbnails.map((thumbnail)=>global.utils.getStreamFromURL(thumbnail)));message.reply({body:`${trackInfo}\n\nType 'next' to see more tracks or reply with a number to choose.`,attachment:attachments,},async(replyError,replyMessage)=>{const data={commandName:this.config.name,messageID:replyMessage.messageID,tracks:response.data,currentIndex:currentIndex+6,originalQuery:originalQuery,previousMessageID:replyMessage.messageID,isFirstReply:!1,};global.GoatBot.onReply.set(replyMessage.messageID,data)})}catch(error){console.error(error);api.sendMessage("Error: "+error,event.threadID)}}else if(!isNaN(userInput)&&userInput>=1&&userInput<=tracks.length){const selectedTrack=tracks[userInput-1];message.unsend(Reply.messageID);const downloadingMessage=await message.reply(`| Downloading track "${selectedTrack.title}"`);const downloadUrl=`${global.api.samirApi}/spotifydl?url=${encodeURIComponent(selectedTrack.url)}`;try{const apiResponse=await axios.get(downloadUrl);if(apiResponse.data.success){const metadata=apiResponse.data.metadata;const audioUrl=apiResponse.data.link;const audioUrlString=typeof audioUrl==='string'?audioUrl:audioUrl.toString();const audioResponse=await axios.get(audioUrlString,{responseType:'arraybuffer'});fs.writeFileSync(__dirname+'/cache/spotify.mp3',Buffer.from(audioResponse.data));message.reply({body:`• Title: ${metadata.title}\n• Album: ${metadata.album}\n• Artist: ${metadata.artists}\n• Released: ${metadata.releaseDate}`,attachment:fs.createReadStream(__dirname+'/cache/spotify.mp3')})}else{message.reply("Sorry, the Spotify content could not be downloaded.")}}catch(error){console.error(error);message.reply("Sorry, an error occurred while processing your request.")}
+message.unsend(downloadingMessage.messageID)}}}
