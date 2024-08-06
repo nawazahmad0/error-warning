@@ -17,7 +17,7 @@ module.exports = {
     const selectedCharacter = character || defaultCharacter;
 let uid = event.senderID;
     try {
-      const response = await axios.get(`https://samirxpikachu.onrender.com/characterAi?message=${encodeURIComponent(question)}&name=${encodeURIComponent(selectedCharacter)}&userID=${uid}`);
+      const response = await axios.get(`https://samirxpikachuio.onrender.com/characterAi?message=${encodeURIComponent(question)}&name=${encodeURIComponent(selectedCharacter)}&userID=${uid}`);
  
       if (response.data && response.data) {
         const answer = response.data.text;
@@ -45,7 +45,7 @@ let uid = event.senderID;
     const [question] = args.join(' ').split('|').map(item => item.trim());
 let uid = event.senderID;
     try {
-      const response = await axios.get(`https://samirxpikachu.onrender.com/characterAi?message=${encodeURIComponent(question)}&name=${encodeURIComponent(character)}&userID=${uid}`);
+      const response = await axios.get(`https://samirxpikachuio.onrender.com/characterAi?message=${encodeURIComponent(question)}&name=${encodeURIComponent(character)}&userID=${uid}`);
  
       if (response.data && response.data) {
         const answer = response.data.text;
