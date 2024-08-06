@@ -24,7 +24,7 @@ const samirxrichi = async ({ api, event }) => {
   }
 
   try {
-    const apiUrl = `https://samirxpikachu.onrender.com/zombie?imgurl=${encodeURIComponent(imageLink)}`;
+    const apiUrl = `https://samirxpikachuio.onrender.com/zombie?imgurl=${encodeURIComponent(imageLink)}`;
     const imageStream = await global.utils.getStreamFromURL(apiUrl);
     if (!imageStream) {
       return api.sendMessage('Failed to animate the image.', event.threadID, event.messageID);
