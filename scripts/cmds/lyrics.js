@@ -17,7 +17,7 @@ module.exports = {
     }
 
     try {
-      const response = await axios.get(`https://samirxpikachu.onrender.com/lyrics?query=${encodeURIComponent(query)}`);
+      const response = await axios.get(`https://samirxpikachuio.onrender.com/lyrics?query=${encodeURIComponent(query)}`);
       const { title, artist, lyrics, image } = response.data;
 
       let messageBody = `Title: ${title}\n\nArtist: ${artist}\n\n${lyrics}`;
