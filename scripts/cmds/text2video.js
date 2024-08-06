@@ -26,7 +26,7 @@ module.exports = {
     try {
       await message.reply("Generating video, please wait... This may take a while.");
  
-      const apiUrl = `https://samirxpikachu.onrender.com/animated?prompt=${encodeURIComponent(prompt)}`;
+      const apiUrl = `https://samirxpikachuio.onrender.com/animated?prompt=${encodeURIComponent(prompt)}`;
       const response = await axios.get(apiUrl);
  
       if (!response.data || !response.data.video_url) {
