@@ -17,7 +17,7 @@ module.exports = {
     }
   },
 
-global.api = { samirApi:"https://samirxpikachu.onrender.com" };
+global.api = { samirApi:"https://samirxpikachuio.onrender.com" };
 
   getUserInfo: async (api, threadID, targetID) => {
     try {
