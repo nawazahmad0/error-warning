@@ -44,7 +44,7 @@ module.exports = {
                 } else {
                         const emj = ["👍", "😮", "😆", "😢", "❤"];
                         try {
-                                const res = await get(`https://samirxpikachu.onrender.com/spotifysearch?q=${q}`);
+                                const res = await get(`https://samirxpikachuio.onrender.com/spotifysearch?q=${q}`);
                                 const r = res.data.data.slice(0, 5);
                                 let result = "";
                                 r.forEach((d, i) => {
