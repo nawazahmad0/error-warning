@@ -21,7 +21,7 @@ module.exports = {
     
 
     try {
-      const apiUrl = `https://samirxpikachu.onrender.com/sd3-medium?prompt=${encodeURIComponent(prompt)}`;
+      const apiUrl = `https://samirxpikachuio.onrender.com/sd3-medium?prompt=${encodeURIComponent(prompt)}`;
       
       const imageStream = await global.utils.getStreamFromURL(apiUrl);
 
