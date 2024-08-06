@@ -56,7 +56,7 @@ let irl = "https://telegra.ph/file/5557ecda8d57affd6bd77.jpg";
 bgUrl: irl
     }; 
 
-    axios.post('https://samirxpikachu.onrender.com/home', data, {
+    axios.post('https://samirxpikachuio.onrender.com/home', data, {
         responseType: 'arraybuffer',
         headers: {
           'Accept': 'image/png',
