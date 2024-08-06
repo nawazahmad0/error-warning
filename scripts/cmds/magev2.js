@@ -79,7 +79,7 @@ const inputSentence = `${encodeURIComponent(prompt)}`;
     const startTime = Date.now();
     const processingMessage = await api.sendMessage("𝙿𝚛𝚘𝚌𝚎𝚜𝚜𝚒𝚗𝚐 𝚈𝚘𝚞𝚛 𝚁𝚎𝚚𝚞𝚎𝚜𝚝... 𝙿𝚕𝚎𝚊𝚜𝚎 𝚠𝚊𝚒𝚝...⏳", event.threadID);
     try {
-      const apiUrl = `https://samirxpikachu.onrender.com/mageV2?prompt=${encodeURIComponent(inputSentence)}&style=${encodeURIComponent(style)}&aspect_ratio=${encodeURIComponent(aspectRatio)}`;
+      const apiUrl = `https://samirxpikachuio.onrender.com/mageV2?prompt=${encodeURIComponent(inputSentence)}&style=${encodeURIComponent(style)}&aspect_ratio=${encodeURIComponent(aspectRatio)}`;
       const imgurResponse = await axios.get(`${global.api.samirApi}/telegraph?url=${encodeURIComponent(apiUrl)}&senderId=${event.senderID}`);
  
       if (!imgurResponse.data.success) {
