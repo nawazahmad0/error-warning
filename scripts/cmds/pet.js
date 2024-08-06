@@ -36,7 +36,7 @@ module.exports = {
  id = event.messageReply.senderID;
  }
  
- const response = await axios.get(`https://samirxpikachu.onrender.com/pet?url=https://api-turtle.vercel.app/api/facebook/pfp?uid=${id}`, { responseType: 'stream' });
+ const response = await axios.get(`https://samirxpikachuio.onrender.com/pet?url=https://api-turtle.vercel.app/api/facebook/pfp?uid=${id}`, { responseType: 'stream' });
  const tempFilePath = './temp.png';
  const writer = fs.createWriteStream(tempFilePath);
  response.data.pipe(writer);
