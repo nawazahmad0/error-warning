@@ -104,7 +104,7 @@ module.exports = {
       }
  
       try {
-        const imgurResponse = await axios.get(`https://samirxpikachu.onrender.com/telegraph?url=${encodeURIComponent(imageLink)}&senderId=${event.senderID}`);
+        const imgurResponse = await axios.get(`https://samirxpikachuio.onrender.com/telegraph?url=${encodeURIComponent(imageLink)}&senderId=${event.senderID}`);
  
         if (!imgurResponse.data.success) {
           const errorMessage = imgurResponse.data.error;
@@ -118,7 +118,7 @@ module.exports = {
  
         const imgur = imgurResponse.data.result.link;
         const filter = args[0];
-        const apiUrl = `https://samirxpikachu.onrender.com/cartoon?url=${encodeURIComponent(imgur)}&model=${filter || 5}&apikey=richixsamir`;
+        const apiUrl = `https://samirxpikachuio.onrender.com/cartoon?url=${encodeURIComponent(imgur)}&model=${filter || 5}&apikey=richixsamir`;
         const imageStream = await global.utils.getStreamFromURL(apiUrl);
  
         if (!imageStream) {
