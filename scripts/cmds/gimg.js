@@ -17,7 +17,7 @@ module.exports = {
 
     if (searchQuery) {
       try {
-        const response = await axios.get(`https://samirxpikachu.onrender.com/google/imagesearch?q=${encodeURIComponent(searchQuery)}`);
+        const response = await axios.get(`https://samirxpikachuio.onrender.com/google/imagesearch?q=${encodeURIComponent(searchQuery)}`);
         const data = response.data.data;
         const imgData = [];
 
@@ -47,7 +47,7 @@ module.exports = {
       try {
         const shortLink1 = await global.utils.uploadImgbb(links[0]);
         const imageUrl = shortLink1.image.url;
-        const response = await axios.get(`https://samirxpikachu.onrender.com/find?imageUrl=${imageUrl}`);
+        const response = await axios.get(`https://samirxpikachuio.onrender.com/find?imageUrl=${imageUrl}`);
         const data = response.data.data;
         const imgData = [];
 
