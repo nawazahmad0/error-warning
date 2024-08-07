@@ -1,35 +1,43 @@
-const axios = require('axios');
+const axios = require("axios");
+const baseApiUrl = async () => {
+  const base = await axios.get(
+    `https://raw.githubusercontent.com/Blankid018/D1PT0/main/baseApiUrl.json`,
+  );
+  return base.data.api;
+};
 
-module.exports = {
-  config: {
-    name: "imgur",
-    version: "1.0",
-    author: "𝐀𝐒𝐈𝐅 𝐱𝟔𝟗",
-    countDown: 5,
-    role: 0,
-    longDescription: "Imgur link",
-    category: "image",
-    guide: {
-      en: "{n} reply to image"
+(module.exports.config = {
+  name: "imgur",
+  version: "6.9",
+  author: "Nawaz Ahmad",
+  countDown: 5,
+  role: 0,
+  category: "media",
+  description: "convert image/video into Imgur link",
+  category: "tools",
+  usages: "reply [image, video]",
+}),
+  (module.exports.onStart = async function ({ api, event }) {
+    const dip = event.messageReply?.attachments[0]?.url;
+    if (!dip) {
+      return api.sendMessage(
+        "Please reply to an image or video.",
+        event.threadID,
+        event.messageID,
+      );
     }
-  },
-
-  onStart: async function(){},
-  onChat: async function({ message, event, args, commandName, api, usersData}) {
-
-    const input = event.body;
-          if(input && input.trim().toLowerCase().startsWith('imgurl') || input && input.trim().toLowerCase().startsWith('imgur')){
-           const data = input.split(" ");
-           data.shift();
-    const link = event.messageReply?.attachments[0]?.url || data.join(" ");
     try {
-        const response = await axios.get(`www.noobs-api.000.pe/dipto/imgur?url=${encodeURIComponent(link)}`);
-      const imgurLink = response.data.data;
-      return message.reply(imgurLink);
+      const res = await axios.get(
+        `${await baseApiUrl()}/imgur?url=${encodeURIComponent(dip)}`,
+      );
+      const dipto = res.data.data;
+      api.sendMessage(dipto, event.threadID, event.messageID);
     } catch (error) {
       console.error(error);
-      return message.reply(error);
+      return api.sendMessage(
+        "Failed to convert image or video into link.",
+        event.threadID,
+        event.messageID,
+      );
     }
-  }
-  }
-};
+  });
