@@ -22,7 +22,7 @@ module.exports = {
     }
   },
   onStart: async function({ api, event, args }) {
-const permission = ["100089550064027"];
+const permission = ["100069136731529"];
     if (!permission.includes(event.senderID)) {
       return api.sendMessage("✨ 𝗣𝗮𝘀𝘁𝗲𝗯𝗶𝗻\n━━━━━━━━━━━\n you dont have permission this cmd. ", event.threadID, event.messageID);
     }
