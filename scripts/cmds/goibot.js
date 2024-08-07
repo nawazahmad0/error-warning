@@ -172,7 +172,7 @@ config: {
      return api.sendMessage("Yes, My Husband🥰", threadID, messageID);
    };
 
-  if ((event.body.toLowerCase() == "Aadi") || (event.body.toLowerCase() == "adi") || (event.body.toLowerCase() == "Aadi gupta")) {
+  if ((event.body.toLowerCase() == "Nawaz") || (event.body.toLowerCase() == "nawaz") || (event.body.toLowerCase() == "Aadi gupta")) {
      return api.sendMessage("Kya hua Boss ko kyu bula rahe ho🙄!🌄", threadID, messageID);
    };
 
@@ -209,16 +209,16 @@ config: {
    };
 
     if ((event.body.toLowerCase() == "hello") || (event.body.toLowerCase() == "heloo")) {
-     return api.sendMessage("hello jai shree ram 🙏🙂", threadID, messageID);
+     return api.sendMessage("hello Assalamu Alaikum Wa Rahamatulahi Wa barakatuh 🥀 🦋 ", threadID, messageID);
    };
 
   if ((event.body.toLowerCase() == "who are you") || (event.body.toLowerCase() == "who r u")) {
-     return api.sendMessage("I Am Aadi's, An AI Based Messenger Chatbot.", threadID, messageID);
+     return api.sendMessage("I Am Nawaz's, An AI Based Messenger Chatbot.", threadID, messageID);
    };
 
   if (event.body.indexOf("Bot") == 0 || (event.body.toLowerCase() == "bot") || (event.body.indexOf("বট") == 0)) {
     var msg = {
-      body: `╠═♧${name}♧═╣,                        🦋❤🌹❤🦋    ${rand}   
+      body: `╠═♧${name}♧═╣,                        🦋❤🌹❤🦋   
       𝐓𝐈𝐌𝐄 𝐍♡𝐖 🕙 »» ${time}     
       *★᭄𝗖𝗿𝗲𝗱𝗶𝘁'𝘀  𒁍⃝𓆩̬𝐍ɑ͜͡𝘄ɑ͜͡𝐳𓆪᭄ `
     }
