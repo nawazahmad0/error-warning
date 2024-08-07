@@ -60,7 +60,7 @@ module.exports = {
 
       const totalCommands = commands.size;
       msg += ``;
-      msg += `\n\n✨ | Aadi'𝒔 𝑨𝒊𝑩𝒐𝑻\n𝗧𝗼𝘁𝗮𝗹 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀 » ${totalCommands}`; // it's not a decoy so change it if you want 
+      msg += `\n\n🦋⃝𓆩̬𝐍ɑ͜͡𝘄ɑ͜͡𝐳𓆪᭄___🩷🪽\n𝗧𝗼𝘁𝗮𝗹 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀 » ${totalCommands}`; // it's not a decoy so change it if you want 
 
       await message.reply({
         body: msg
