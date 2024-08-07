@@ -172,7 +172,7 @@ config: {
      return api.sendMessage("Yes, My Husband🥰", threadID, messageID);
    };
 
-  if ((event.body.toLowerCase() == "Nawaz") || (event.body.toLowerCase() == "nawaz") || (event.body.toLowerCase() == "Aadi gupta")) {
+  if ((event.body.toLowerCase() == "Nawaz") || (event.body.toLowerCase() == "nawaz") || (event.body.toLowerCase() == "@一 Nʌwʌz'Ꮗཐི༏ཋྀ")) {
      return api.sendMessage("Kya hua Boss ko kyu bula rahe ho🙄!🌄", threadID, messageID);
    };
 
