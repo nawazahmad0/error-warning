@@ -28,7 +28,7 @@ module.exports = {
    return api.sendMessage("❌| Wrong Formet .✅ | Use 17/18 years old boy/girl watching football match on tv and written Dipto and 69 on the back of his Dress , 4k",event.threadID,event.messageID);
   }
     try {
-const tl = ["1VmM-MH1u6TUoxC6nGgO1O1HqCci7TFIGT97FydP7v83T0hRxPnpdWiXBvnMC-M3_-G-3XMeDRyr-eb7Od4zgoQS8e7sp03a9TjpplvHByE3QG-c9tbFIecn3SfRp3Rw1J_TYedkee2vqbwVdE2bqGpHMWUt_SLTmB_01Mjmx0R6il1ADjMuGF5Fum8g-ldVVvl0F99PG0nNk4EZXVsm53g",""];
+const tl = ["1VmM-MH1u6TUoxC6nGgO1O1HqCci7TFIGT97FydP7v83T0hRxPnpdWiXBvnMC-M3_-G-3XMeDRyr-eb7Od4zgoQS8e7sp03a9TjpplvHByE3QG-c9tbFIecn3SfRp3Rw1J_TYedkee2vqbwVdE2bqGpHMWUt_SLTmB_01Mjmx0R6il1ADjMuGF5Fum8g-ldVVvl0F99PG0nNk4EZXVsm53g"];
 const cookies = tl[Math.floor(Math.random() * tl.length)];
       const w = await api.sendMessage("Wait koro baby < 😽", event.threadID);
   
